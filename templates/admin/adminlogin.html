@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+Admin Login
+
+{% endblock%}
+
+{% block pagecontent %}
+
+<form method="get" action="adminAuthenticate">
+    {% csrf_token %}
+    <div style="text-align: center">
+        <label for="username">USERNAME:</label><br> 
+        <input type="text" name="username"><br>
+        <label for="password">PASSWORD</label><br> 
+        <input type="password" name="password"><br>
+        <input type="submit" value="Login"></input>
+    </div>
+</form>
+{% endblock%}
