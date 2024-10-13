@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 def adminLoginPage(request):
     if request.user.is_authenticated:
         return render(request,'pizzashopapp/adminhomepage.html')
-    return render(request,"admin/adminlogin.html")
+    return render(request,"pizzashopapp/adminlogin.html")
 
 def adminAuthenticate(request):
    username= request.GET['username']
@@ -19,7 +19,7 @@ def adminAuthenticate(request):
        return redirect('adminLoginPage')
    else:
        login(request,user)
-       return redirect('adminHomepage')
+       return redirect('pizzashopapp:adminHomepage')
    
 @login_required(login_url="/admin/")
 def adminHomePage(request):
@@ -27,4 +27,4 @@ def adminHomePage(request):
 
 def adminLogout(request):
     logout(request)
-    return redirect('adminLoginPage')
+    return redirect('pizzashopapp:adminLoginPage')
