@@ -1,11 +1,15 @@
 {% extends "base.html" %}
 
 {% block title %}
-
 Admin HomePage
-
-{% endblock%}
+{% endblock %}
 
 {% block pagecontent %}
-HELLO ADMIN
-{% endblock%}
+<div class="container text-center mt-5">
+    <div class="card p-5 shadow">
+        <h1 class="mb-4">Hello, Admin!</h1>
+        <p class="lead">Welcome to the admin dashboard. Use the navigation to manage the platform.</p>
+        <a href="#" class="btn btn-outline-primary mt-3">Logout</a>
+    </div>
+</div>
+{% endblock %}
