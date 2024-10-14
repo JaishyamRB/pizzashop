@@ -3,37 +3,16 @@ from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
-
-# def adminLoginPage(request):
-#     if request.user.is_authenticated:
-#         # return render(request,'pizzashopapp/adminhomepage.html')
-#         return "pizzashopapp/adminhomepage.html"
-#     # return render(request,"pizzashopapp/adminlogin.html")
-#     return "pizzashopapp/adminlogin.html"
-
-# def adminAuthenticate(request):
-#    username= request.GET['username']
-#    password = request.GET['password']
-
-#    user = authenticate(username = username, password = password)
-#    if not user:
-#        messages.add_message(request,messages.ERROR,"Invalid Credentials")
-#        return redirect('adminLoginPage')
-#    else:
-#        login(request,user)
-#        return redirect('pizzashopapp:adminHomepage')
-   
-@login_required(login_url="/admin/")
-def adminHomePage(request):
-    return render(request,'pizzashopapp/adminhomepage.html')
 
 def adminLogout(request):
     logout(request)
     return redirect('pizzashopapp:adminLoginPage')
 
-# rewriting the as class based views
+# rewriting views as class
+
 class AdminLoginPage(generic.TemplateView):
     def get(self,request,*args,**kwargs):
         #handles login page and redirection 
@@ -54,4 +33,9 @@ class AdminLoginPage(generic.TemplateView):
             messages.add_message(request,messages.ERROR,"Invalid Credentials")
             return redirect('pizzashopapp:adminLoginPage')
 
-
+class AdminHomePage(LoginRequiredMixin,generic.TemplateView):
+    login_url = "/admin/"
+    
+    def get(self,request,*args,**kwargs):
+        #handles redirecion based on authentication
+        return render(request,'pizzashopapp/adminhomepage.html')
