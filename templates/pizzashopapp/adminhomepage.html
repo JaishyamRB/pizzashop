@@ -5,6 +5,7 @@ Admin HomePage
 {% endblock %}
 
 {% block pagecontent %}
+<!-- Navbar Section -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Admin Dashboard</a>
@@ -31,10 +32,110 @@ Admin HomePage
     </div>
 </nav>
 
-<div class="container text-center mt-5">
-    <div class="card p-5 shadow">
-        <h1 class="mb-4">Hello, Admin!</h1>
-        <p class="lead">Welcome to the admin dashboard. Use the navigation above to manage your account.</p>
+<!-- Main Content Section -->
+<div class="container mt-5">
+    <!-- Admin Greeting Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card p-5 shadow">
+                <h1 class="mb-4">Hello, Admin!</h1>
+                <p class="lead">Welcome to the admin dashboard. Use the navigation above to manage your account.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Section -->
+    <div class="row mb-4">
+        <div class="col-md-6 mx-auto">
+            <div class="card p-5 shadow">
+                <h3 class="text-center mb-4">Add New Product</h3>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="action_name" value="add_product">
+                    <div class="mb-3">
+                        <input type="text" name="name" class="form-control" placeholder="Enter Product Name" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="number" step="0.01" name="price" class="form-control" placeholder="Enter Product Price" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Add Product</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Available Products Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card p-5 shadow">
+                <h3 class="text-center mb-4">Available Products</h3>
+                {% if Products %}
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Product Name</th>
+                                <th>Price</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in Products %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ product.name }}</td>
+                                    <td>${{ product.price }}</td>
+                                    <td>
+                                        <!-- Edit and Delete Buttons -->
+                                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editProductModal{{ product.id }}">Edit</button>
+                                        <form method="post" action="" class="d-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action_name" value="delete_product">
+                                            <input type="hidden" name="product_pk" value="{{product.id}}">
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+
+                                        <!-- Edit Product Modal -->
+                                        <div class="modal fade" id="editProductModal{{ product.id }}" tabindex="-1" aria-labelledby="editProductModalLabel{{ product.id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editProductModalLabel{{ product.id }}">Edit Product</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <form method="post" action="">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="action_name" value="edit_product">
+                                                        <input type="hidden" name="product_pk" value="{{product.id}}">
+                                                        <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <label for="product_name_{{ product.id }}" class="form-label">Product Name</label>
+                                                                <input type="text" name="name" class="form-control" id="product_name_{{ product.id }}" value="{{ product.name }}" required>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="product_price_{{ product.id }}" class="form-label">Price</label>
+                                                                <input type="number" name="price" step="0.01" class="form-control" id="product_price_{{ product.id }}" value="{{ product.price }}" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- End of Edit Product Modal -->
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p class="text-center text-muted">No products available. Add some products to get started!</p>
+                {% endif %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
