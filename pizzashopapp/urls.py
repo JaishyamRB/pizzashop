@@ -16,18 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from .views import adminLogout,AdminLoginPage,AdminHomePage
+from .views import userLogout,AdminLoginPage,AdminHomePage,CustomerHomePage,CustomerLoginPage
 
 app_name = "pizzashopapp"
 
 urlpatterns = [
+    path('', CustomerHomePage.as_view(), name="customerHomePage"),
+    path('login/', CustomerLoginPage.as_view(), name="customerLoginPage"),
     path(
         'admin/',
         include([
             path('', AdminLoginPage.as_view(), name= "adminLoginPage"),
             path('home/', AdminHomePage.as_view(), name="adminHomepage"),
-            path('logout/',adminLogout, name="adminLogout")
+            path('logout/',userLogout, name="userLogout")
         ])
-        
-    )
+    ),
 ]

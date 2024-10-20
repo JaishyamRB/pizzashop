@@ -24,7 +24,7 @@ Admin HomePage
                         <li><a class="dropdown-item" href="#">Profile</a></li>
                         <li><a class="dropdown-item" href="#">Settings</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="{% url 'pizzashopapp:adminLogout' %}">Logout</a></li>
+                        <li><a class="dropdown-item text-danger" href="{% url 'pizzashopapp:userLogout' %}">Logout</a></li>
                     </ul>
                 </li>
             </ul>
@@ -44,10 +44,11 @@ Admin HomePage
         </div>
     </div>
 
-    <!-- Add Product Section -->
+    <!-- Product Management Section -->
     <div class="row mb-4">
-        <div class="col-md-6 mx-auto">
-            <div class="card p-5 shadow">
+        <!-- Add Product Section - 25% Width -->
+        <div class="col-md-3">
+            <div class="card p-4 shadow">
                 <h3 class="text-center mb-4">Add New Product</h3>
                 <form method="post" action="">
                     {% csrf_token %}
@@ -62,11 +63,9 @@ Admin HomePage
                 </form>
             </div>
         </div>
-    </div>
 
-    <!-- Available Products Section -->
-    <div class="row mb-4">
-        <div class="col-md-12">
+        <!-- Available Products Section - 75% Width -->
+        <div class="col-md-9">
             <div class="card p-5 shadow">
                 <h3 class="text-center mb-4">Available Products</h3>
                 {% if Products %}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}
+Login / Signup
+{% endblock %}
+
+{% block pagecontent %}
+<div class="container mt-5">
+    <!-- Link to go back to the homepage -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <a href="/" class="btn btn-outline-primary">← Back to Home</a>
+        </div>
+    </div>
+
+    {% if messages %}
+    <div class="mt-3">
+        {% for message in messages %}
+        <div class="alert alert-danger" role="alert" style="text-align: center">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        <!-- Signup Form Section - 50% Width -->
+        <div class="col-md-6">
+            <div class="card p-5 shadow" style="min-height: 400px;"> <!-- Ensure the height is consistent -->
+                <h3 class="text-center mb-4">Create an Account</h3>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="action_name" value="singup_user">
+                    <div class="mb-3">
+                        <label for="signup_username" class="form-label">Username</label>
+                        <input type="text" name="username" class="form-control" id="signup_username" placeholder="Enter username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="signup_email" class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control" id="signup_email" placeholder="Enter email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="signup_password" class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" id="signup_password" placeholder="Enter password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="signup_confirm_password" class="form-label">Confirm Password</label>
+                        <input type="password" name="password1" class="form-control" id="signup_confirm_password" placeholder="Confirm password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Login Form Section - 50% Width -->
+        <div class="col-md-6">
+            <div class="card p-5 shadow" style="min-height: 400px;"> <!-- Ensure the height is consistent -->
+                <h3 class="text-center mb-4">Log In</h3>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="action_name" value="login_user">
+                    {% comment %} <input type="hidden" name="product_pk" value="{{product.id}}"> {% endcomment %}
+                    <div class="mb-3">
+                        <label for="login_username" class="form-label">Username or Email</label>
+                        <input type="text" name="username" class="form-control" id="login_username" placeholder="Enter username or email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="login_password" class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" id="login_password" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Log In</button>
+                </form>
+                <div class="text-center mt-3">
+                    <a href="#">Forgot password?</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
