@@ -44,7 +44,7 @@ Admin HomePage
     <div class="row mb-4">
         <div class="col-md-12">
             <div class="card p-5 shadow">
-                <h1 class="mb-4">Hello, Admin!</h1>
+                <h1 class="mb-4">Hello {{ request.user.username }},</h1>
                 <p class="lead">Welcome to the admin dashboard. Use the navigation above to manage your account.</p>
             </div>
         </div>

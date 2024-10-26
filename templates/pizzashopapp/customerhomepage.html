@@ -47,7 +47,7 @@ Customer HomePage
 
 <div class="container mt-5" > 
 <!-- Link to go back to the admin page -->
- {% if user.is_superuser%}
+ {% if user.is_superuser %}
  <div class="row mb-4">
     <div class="col-md-12">
         <a href="/admin" class="btn btn-light">← Admin Page</a>
@@ -82,7 +82,7 @@ Customer HomePage
             </div>
             {% endfor %}
         {% else %}
-            <p class="text-center text-muted">No products available at the moment. Please check back later!</p>
+            <p class="text-center" style="color:white">No products available at the moment. Please check back later!</p>
         {% endif %}
     </div>
 </div>

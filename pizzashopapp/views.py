@@ -42,7 +42,7 @@ class AdminLoginPage(generic.TemplateView):
         #handles login page and redirection 
         if request.user.is_authenticated:
             return redirect('pizzashopapp:adminHomepage')
-        return redirect('pizzashopapp:adminLoginPage')
+        return render(request,'pizzashopapp/adminlogin.html',context)
     
     def post(self,request,*args,**kwargs):
        
@@ -57,7 +57,9 @@ class AdminHomePage(LoginRequiredMixin,generic.TemplateView):
     def get(self,request,*args,**kwargs):
         #handles redirecion based on authentication
         context = {"Products":Product.objects.all()}
-        return render(request,'pizzashopapp/adminhomepage.html',context)
+        if request.user.is_superuser:
+           return render(request,'pizzashopapp/adminhomepage.html',context)
+        return redirect('pizzashopapp:customerHomePage')
     
     def post(self,request,*args,**kwargs):
        action = request.POST.get('action_name')
