@@ -34,7 +34,7 @@ def userLogin(request):
    else:
       #add error message and redirect to login/signp page
       messages.add_message(request,messages.ERROR,"Invalid Credentials")
-      return render(request,'pizzashopapp/customerlogin.html')
+      return redirect('pizzashopapp:customerLoginPage')
 # rewriting views as class
 
 class AdminLoginPage(generic.TemplateView):
@@ -42,29 +42,21 @@ class AdminLoginPage(generic.TemplateView):
         #handles login page and redirection 
         if request.user.is_authenticated:
             return redirect('pizzashopapp:adminHomepage')
-        return render(request,'pizzashopapp/adminlogin.html')
+        return redirect('pizzashopapp:adminLoginPage')
     
     def post(self,request,*args,**kwargs):
        
        action = request.POST.get('action',None)
        #handles auntentication and redirection
        if not action:
-           username= request.POST['username']
-           password = request.POST['password']
-
-           user = authenticate(username = username, password = password)
-           if user:
-            login(request,user)
-            return redirect('pizzashopapp:adminHomepage')
-           else:
-            messages.add_message(request,messages.ERROR,"Invalid Credentials")
-            return redirect('pizzashopapp:adminLoginPage')
+          return userLogin(request)
 
 class AdminHomePage(LoginRequiredMixin,generic.TemplateView):
     login_url = "/admin/"
     
     def get(self,request,*args,**kwargs):
         #handles redirecion based on authentication
+        context = {"Products":Product.objects.all()}
         return render(request,'pizzashopapp/adminhomepage.html',context)
     
     def post(self,request,*args,**kwargs):
@@ -87,6 +79,7 @@ class AdminHomePage(LoginRequiredMixin,generic.TemplateView):
         
 class CustomerHomePage(generic.TemplateView):
    def get(self,request,*args,**kwargs):
+      context = {"Products":Product.objects.all()}
       return render(request,'pizzashopapp/customerhomepage.html',context)    
 
 class CustomerLoginPage(generic.TemplateView):
