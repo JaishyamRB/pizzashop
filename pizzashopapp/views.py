@@ -217,8 +217,11 @@ class MyOrder(generic.TemplateView):
       context = {"Products":Product.objects.all(),
                  "current_orders":current_order,
                  "completed_orders":completed_orders}
-      print("ge")
-
+      
       return render(request,"pizzashopapp/order.html",context)
+   
+class MyAccount(generic.TemplateView):
+   def get(self,request,*args,**kwargs):
+      return render(request,"pizzashopapp/account.html")
 
 
