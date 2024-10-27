@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
-from .views import userLogout,AdminLoginPage,AdminHomePage,CustomerHomePage,CustomerLoginPage,MyCart
+from .views import userLogout,AdminLoginPage,AdminHomePage,CustomerHomePage,CustomerLoginPage,MyCart,MyOrder
 
 app_name = "pizzashopapp"
 
@@ -24,6 +24,7 @@ urlpatterns = [
     path('', CustomerHomePage.as_view(), name="customerHomePage"),
     path('login/', CustomerLoginPage.as_view(), name="customerLoginPage"),
     path('mycart/', MyCart.as_view() , name="myCart"),
+    path('myorders/', MyOrder.as_view(), name="myOrders"),
     path(
         'admin/',
         include([

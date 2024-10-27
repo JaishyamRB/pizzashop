@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+My Orders
+{% endblock %}
+
+{% block pagecontent %}
+<!-- Full-page Background Image -->
+<div style="
+    background-image: url({% static 'img/background.png' %});
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+">
+
+    <!-- Navbar Section -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Product Store</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <a class="nav-link" href="{% url 'pizzashopapp:myCart' %}">My Cart</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            My Account
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+                            <li><a class="dropdown-item" href="{% url 'pizzashopapp:myOrders' %}">My Orders</a></li>
+                            <li><a class="dropdown-item" href="">Account Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{% url 'pizzashopapp:userLogout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Order Content Section -->
+    <div class="container mt-5">
+        <!-- Link to go back to the homepage -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <a href="/" class="btn btn-light">← Back to Home</a>
+            </div>
+        </div>
+
+        <h3 class="text-center mb-4" style="color:white">My Orders</h3>
+
+        <!-- Current Orders Section -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card p-4 shadow">
+                    <h4>Current Orders</h4>
+                    {% if current_orders %}
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Date</th>
+                                    <th>Total Price</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in current_orders %}
+                                    <tr>
+                                        <td>{{ order.id }}</td>
+                                        <td>{{ order.order_date }}</td>
+                                        <td>${{ order.total_price }}</td>
+                                        <td>In Progress</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <p class="text-muted">You have no current orders.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed Orders Section (Collapsible) -->
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="card p-4 shadow">
+                    <h4>
+                        <a class="text-decoration-none" data-bs-toggle="collapse" href="#completedOrders" role="button" aria-expanded="false" aria-controls="completedOrders">
+                            Completed Orders
+                        </a>
+                    </h4>
+                    <div class="collapse" id="completedOrders">
+                        {% if completed_orders %}
+                            <table class="table table-hover align-middle mt-3">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Date</th>
+                                        <th>Total Price</th>
+                                        <th>Completion Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in completed_orders %}
+                                        <tr>
+                                            <td>{{ order.id }}</td>
+                                            <td>{{ order.order_date }}</td>
+                                            <td>${{ order.total_price }}</td>
+                                            <td>{{ order.completion_date }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <p class="text-muted">You have no completed orders.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

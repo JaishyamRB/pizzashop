@@ -204,6 +204,21 @@ class MyCart(generic.TemplateView):
 
        return redirect('pizzashopapp:myCart')
 
+class MyOrder(generic.TemplateView):
+   def get(self,request,*args,**kwargs):
+      user = request.user
+      if user.is_anonymous:
+         messages.add_message(request,messages.ERROR,"Please login to view your orders")
+         return redirect("pizzashopapp:customerLoginPage")
 
+      customer = Customer.objects.get(user=user)
+      completed_orders = Order.objects.filter(user = customer,completed = True)
+      current_order = Order.objects.filter(user = customer,completed = False)
+      context = {"Products":Product.objects.all(),
+                 "current_orders":current_order,
+                 "completed_orders":completed_orders}
+      print("ge")
+
+      return render(request,"pizzashopapp/order.html",context)
 
 
