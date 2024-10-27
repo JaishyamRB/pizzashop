@@ -5,12 +5,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Product,Customer,Cart,CartLine,Product
+from .models import Product,Customer,Cart,CartLine,Product,Order,OrderLine
 
 context = {"Products":Product.objects.all()}
 
 # Create your views here.
-
 def userLogout(request):
     su = request.user.is_superuser 
     logout(request)
@@ -56,7 +55,9 @@ class AdminHomePage(LoginRequiredMixin,generic.TemplateView):
     
     def get(self,request,*args,**kwargs):
         #handles redirecion based on authentication
-        context = {"Products":Product.objects.all()}
+        context = {"Products":Product.objects.all(),
+                   "current_orders":Order.objects.filter(completed=False),
+                   "completed_orders":Order.objects.filter(completed=True)}
         if request.user.is_superuser:
            return render(request,'pizzashopapp/adminhomepage.html',context)
         return redirect('pizzashopapp:customerHomePage')
@@ -67,17 +68,21 @@ class AdminHomePage(LoginRequiredMixin,generic.TemplateView):
           product = Product(name = request.POST['name'], price = request.POST['price'])
           product.save()
        
-       elif action == "delete_product":
+       if action == "delete_product":
         Product.objects.filter(id = request.POST.get('product_pk')).delete()
 
-       elif action == "edit_product":
+       if action == "edit_product":
           current_product = Product.objects.filter(id = request.POST.get('product_pk'))[0]
           current_product.name = request.POST.get('name')
           current_product.price = request.POST.get('price')
           current_product.save()
 
-       context = {"Products":Product.objects.all()}
-       return render(request,'pizzashopapp/adminhomepage.html',context)
+       if action == "order_complete":
+          order = Order.objects.get(id=int(request.POST.get('order_pk')))
+          order.completed = True
+          order.save()
+
+       return redirect("pizzashopapp:adminHomepage")
         
 class CustomerHomePage(generic.TemplateView):
    def get(self,request,*args,**kwargs):
@@ -98,8 +103,9 @@ class CustomerHomePage(generic.TemplateView):
 
          product=Product.objects.get(id=productpk)
          customer = Customer.objects.filter(user=user)[0]
-         cart = Cart.objects.get(user=user)
-         if not cart:
+         try:
+            cart = Cart.objects.get(user=user)
+         except Cart.DoesNotExist:
             cart = Cart(user=user)
             cart.save()
 
@@ -111,7 +117,6 @@ class CustomerHomePage(generic.TemplateView):
          
          #else create new cartline
          except CartLine.DoesNotExist:
-            print("except")
             cart.cartline_set.create(product=product,quantity=quantity)
             customer.cart = cart
             customer.save()
@@ -151,15 +156,21 @@ class CustomerLoginPage(generic.TemplateView):
 class MyCart(generic.TemplateView):
    def get(self,request,*args,**kwargs):
       user = request.user
-      if not user:
-         context = {"Products":Product.objects.all()}
-         return render(request,'pizzashopapp/customerhomepage.html',context)   
 
-      cart = Cart.objects.get(user=user)
-      context = {"Products":Product.objects.all(),
+      if user.is_anonymous :
+         context = {"Products":Product.objects.all()}
+         return redirect('pizzashopapp:customerHomePage')   
+
+      try:
+         cart = Cart.objects.get(user=user)
+         context = {"Products":Product.objects.all(),
               "cart_items":CartLine.objects.filter(cart=cart),
-              "total_price":cart.total_price}
-      return render(request,"pizzashopapp/cart.html",context)
+              "total_price":cart.total_price,
+              "cart":cart}
+         return render(request,"pizzashopapp/cart.html",context)
+      except Cart.DoesNotExist:
+         messages.add_message(request,messages.ERROR,"The cart is empty")
+         return redirect("pizzashopapp:customerHomePage")
    
    def post(self,request,*args,**kwargs):
        action = request.POST.get("action_name")
@@ -172,6 +183,22 @@ class MyCart(generic.TemplateView):
           cart_line = CartLine.objects.get(id = request.POST.get("cartline_pk"))
           cart_line.quantity = new_quantity
           cart_line.save()
+         
+       if action == "place_order":
+          cart = Cart.objects.get(id=int(request.POST['cart_pk']))
+          user=request.user
+          customer = Customer.objects.filter(user=user)[0]
+          order = Order(user=customer)
+          order.save()
+          
+          for line in cart.cartline_set.all():
+             order.orderline_set.create(quantity=line.quantity,product=line.product)
+          
+          order.save()
+
+          #delete cart once order is placed
+          cart.delete()
+          return redirect('pizzashopapp:customerHomePage')
        
 
 

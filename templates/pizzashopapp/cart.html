@@ -39,7 +39,7 @@ My Cart
                                 <li><a class="dropdown-item" href="">My Orders</a></li>
                                 <li><a class="dropdown-item" href="">Account Settings</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="">Logout</a></li>
+                                <li><a class="dropdown-item text-danger" href="{% url 'pizzashopapp:userLogout' %}">Logout</a></li>
                             </ul>
                         </li>
                     {% else %}
@@ -106,7 +106,13 @@ My Cart
             <div class="col-md-3">
                 <div class="card p-3 shadow-sm" style="background-color: white;">
                     <h4>Total: ${{ total_price }}</h4>
-                    <a href="" class="btn btn-success w-100 mt-3">Proceed to Checkout</a>
+                    {% if cart %} 
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <input type="hidden" name="action_name" value="place_order">
+                        <input type="hidden" name="cart_pk" value="{{ cart.id }}">
+                        <button type="submit" class="btn btn-success w-100 mt-3">Place Order</button>
+                    {% endif %}
                 </div>
             </div>
         </div>
